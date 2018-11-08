@@ -11,6 +11,17 @@ const cache = {}
 //   console.log(data)
 // })
 
+
+// This will overwrite a file if the filename passed in as first argument already
+// exists
+// fs.writeFile('./example.txt', 'I will be written to example.txt', err => {
+//   if (err) {
+//     console.log(err);
+//     return
+//   }
+//   console.log('file successfully written!');
+// })
+
 // fs.writeFile('./example.txt', 'I will be written to example.txt', err => {
 //   if (err) {
 //     console.log(err)
@@ -18,31 +29,41 @@ const cache = {}
 //   }
 //   console.log('file successfully written')
 // })
-
-// function selectAnimals(animalString, animalLetter) {
+//
+// function getAnimals(animalString, animalLetter) {
 //   return animalString
 //     .split('\n')
 //     .filter(animal => animal.startsWith(animalLetter))
 //     .join('\n')
 // }
+//
+// const animalLetter = process.argv[2].toUpperCase();
 
-// const animalLetter = process.argv[2].toUpperCase()
 
-// fs.readFile('./animals.txt', 'utf-8', (err, data) => {
-//   if (err) {
-//     console.log(err)
-//     return
-//   }
-//   const animals = selectAnimals(data, animalLetter)
+function selectAnimals(animalString, animalLetter) {
+  return animalString
+    .split('\n')
+    .filter(animal => animal.startsWith(animalLetter))
+    .join('\n')
+}
 
-//   fs.writeFile(`${animalLetter}_animals.txt`, animals, err => {
-//     if (err) {
-//       console.log(err)
-//       return
-//     }
-//     console.log(`successfully created ${animalLetter}_animals.txt`)
-//   })
-// })
+const animalLetter = process.argv[2].toUpperCase()
+
+fs.readFile('./animals.txt', 'utf-8', (err, data) => {
+  if (err) {
+    console.log(err)
+    return
+  }
+  const animals = selectAnimals(data, animalLetter)
+
+  fs.writeFile(`${animalLetter}_animals.txt`, animals, err => {
+    if (err) {
+      console.log(err)
+      return
+    }
+    console.log(`successfully created ${animalLetter}_animals.txt`)
+  })
+})
 
 // const animalServer = http.createServer((req, res) => {
 //   const query = req.url.split('?')[1]
