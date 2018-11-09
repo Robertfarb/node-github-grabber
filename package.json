@@ -4,14 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon animal_fun.js",
+    "start": "nodemon github_grabber.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.18.6"
   },
   "dependencies": {}
 }

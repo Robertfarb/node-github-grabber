@@ -1,41 +1,45 @@
-const fs = require('fs')
-const qs = require('qs')
-const http = require('http')
-const https = require('https')
-
-function buildOptionsObj (username) {
-  return {
-    hostname: `api.github.com`,
-    path: `/users/${username}/starred`,
-    headers: {
-      'User-Agent': 'github-grabber'
-    }
-  }
-}
+const fs = require('fs');
+const http = require('http');
+const qs = require('querystring');
+const https = require('https');
 
 const githubServer = http.createServer((req, res) => {
   if (req.method === 'POST') {
-    let requestBody = ''
-    req.on('data', chunk => {
-      requestBody += chunk
-    })
+    let body = '';
+    req.on('data', d => {
+      body += d;
+    });
     req.on('end', () => {
-      const username = qs.parse(requestBody).username
-      const ws = fs.createWriteStream(`./${username}_starred_repos.txt`)
-      const opts = buildOptionsObj(username)
-      https.get(opts, (dataStream) => {
-        let repoData = ''
-        dataStream.on('data', chunk => { repoData += chunk })
-        dataStream.on('end', () => {
-          const repos = JSON.parse(repoData).map(repo => {
-            return `Repo: ${repo.name}. Stars: ${repo.stargazers_count}.`
-          }).join('\n')
-          ws.write(repos)
-          res.end(repos)
-        })
-      })
-    })
+      const username = qs.parse(body).username
+      res.end(username);
+    });
   }
-})
+});
 
-githubServer.listen(8080, () => console.log('Listening on 8080'))
+
+const options = {
+  hostname: 'api.github.com',
+  port: 80,
+  path: '/',
+  method: 'GET',
+};
+
+const githubReq = https.request(options, (res) => {
+  console.log(`STATUS: ${res.statusCode}`);
+  console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
+  res.setEncoding('utf8');
+
+  res.on('data', (d) => {
+    console.log(`BODY: ${d}`);
+  });
+  res.on('end', () => {
+    console.log('No more data in response.');
+  });
+});
+
+githubReq.on('error', (e) => {
+  console.error(`problem with request: ${e.message}`);
+});
+
+
+githubServer.listen(8000, () => console.log("Listening on port 8000"))
